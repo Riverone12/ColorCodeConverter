@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">色コード変換</string>
+
+    <!---->
+    <string name="banner_ad_unit_id">ca-app-pub-1882812461462801/2041151703</string>
+    <!---->
+    <!-- Test
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    -->
+
+    <string name="label10To16">10進RGB → 16進コード</string>
+    <string name="label16To10">16進コード → 10進RGB</string>
+
+    <string name="captionButtonConvert">変換</string>
+</resources>

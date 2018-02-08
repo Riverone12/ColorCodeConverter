@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mainPadding">4dp</dimen>
+
+    <dimen name="textSizeXLarge">36sp</dimen>
+    <dimen name="textSizeLarge">24sp</dimen>
+    <dimen name="textSizeMiddle">18sp</dimen>
+
+    <dimen name="bottomSpace">12dp</dimen>
+    <dimen name="labelEndMargin">8dp</dimen>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ColorCodeConverter</string>
+
+    <!---->
+    <string name="banner_ad_unit_id">ca-app-pub-1882812461462801/2041151703</string>
+    <!---->
+    <!-- Test
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    -->
+
+    <string name="label10To16">RGB Dec -> Hex</string>
+    <string name="label16To10">Hex -> RGB Dec</string>
+
+    <string name="captionButtonConvert">CONVERT</string>
+</resources>
