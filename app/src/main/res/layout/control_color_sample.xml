@@ -2,37 +2,38 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:background="@drawable/bg_radius"
+    android:layout_marginBottom="1dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <FrameLayout
+    <View
         android:id="@+id/colorSampleView"
-        android:layout_marginEnd="@dimen/labelEndMargin"
-        android:layout_marginRight="@dimen/labelEndMargin"
-        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="4"
         android:layout_width="0dp"
         android:layout_height="match_parent" />
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_weight="1"
+        android:padding="4dp"
+        android:layout_weight="6"
         android:layout_width="0dp"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <TextView
             android:id="@+id/textViewColorCode"
             android:textSize="@dimen/textSizeMiddle"
-            android:textColor="#eee"
-            android:layout_weight="1"
+            android:textColor="#333"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/textViewRGB"
             android:textSize="@dimen/textSizeMiddle"
-            android:textColor="#eee"
+            android:textColor="#333"
             android:gravity="end"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>

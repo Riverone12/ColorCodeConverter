@@ -97,38 +97,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginBottom="4dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/colorListView"
+        android:background="#333"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-        <include
-            android:id="@+id/colorSample0"
-            layout="@layout/control_color_sample"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-        <include
-            android:id="@+id/colorSample1"
-            layout="@layout/control_color_sample"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-        <include
-            android:id="@+id/colorSample2"
-            layout="@layout/control_color_sample"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-        <include
-            android:id="@+id/colorSample3"
-            layout="@layout/control_color_sample"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-    </LinearLayout>
+        android:layout_height="0dp" />
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"

@@ -9,13 +9,11 @@ import net.grandcentrix.tray.AppPreferences
  */
 object AppPreference {
 
-    private const val PREFERENCE_VERSION = 1
+    private const val PREFERENCE_VERSION = 2
+
     private const val PREF_KEY_VERSION = "pref_version"
     private const val PREF_KEY_MODE = "pref_mode"
-    private const val PREF_KEY_HISTORY_0 = "pref_history_0"
-    private const val PREF_KEY_HISTORY_1 = "pref_history_1"
-    private const val PREF_KEY_HISTORY_2 = "pref_history_2"
-    private const val PREF_KEY_HISTORY_3 = "pref_history_3"
+    private const val PREF_KEY_HISTORY_JSON = "pref_history_json"
 
     // モード
     const val MODE_RGB_TO_HEX = 0
@@ -23,10 +21,7 @@ object AppPreference {
 
     var mode: Int = MODE_RGB_TO_HEX
 
-    var colorHistory0 = ""
-    var colorHistory1 = ""
-    var colorHistory2 = ""
-    var colorHistory3 = ""
+    var historyJson: String = ""
 
     fun initialize(applicationContext: Context) {
         val appPref = AppPreferences(applicationContext)
@@ -37,10 +32,7 @@ object AppPreference {
         }
         // Tray から設定値を読み込む
         mode = appPref.getInt(PREF_KEY_MODE, MODE_RGB_TO_HEX)
-        colorHistory0 = appPref.getString(PREF_KEY_HISTORY_0, "") ?: ""
-        colorHistory1 = appPref.getString(PREF_KEY_HISTORY_1, "") ?: ""
-        colorHistory2 = appPref.getString(PREF_KEY_HISTORY_2, "") ?: ""
-        colorHistory3 = appPref.getString(PREF_KEY_HISTORY_3, "") ?: ""
+        historyJson = appPref.getString(PREF_KEY_HISTORY_JSON, "") ?: ""
 
         if (prefVersion < PREFERENCE_VERSION) {
             saveAll(applicationContext)
@@ -51,9 +43,6 @@ object AppPreference {
         val appPref = AppPreferences(applicationContext)
         appPref.put(PREF_KEY_VERSION, PREFERENCE_VERSION)
         appPref.put(PREF_KEY_MODE, mode)
-        appPref.put(PREF_KEY_HISTORY_0, colorHistory0)
-        appPref.put(PREF_KEY_HISTORY_1, colorHistory1)
-        appPref.put(PREF_KEY_HISTORY_2, colorHistory2)
-        appPref.put(PREF_KEY_HISTORY_3, colorHistory3)
+        appPref.put(PREF_KEY_HISTORY_JSON, historyJson)
     }
 }

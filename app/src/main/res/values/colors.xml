@@ -11,4 +11,6 @@
 
     <color name="mainBackground">#666</color>
     <color name="mainTextColor">#ccc</color>
+
+    <color name="colorWhite">#fff</color>
 </resources>

@@ -3,7 +3,11 @@ package biz.riverone.colorcodeconverter
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.text.InputFilter
 import android.text.Spanned
 import android.view.View
@@ -11,11 +15,18 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import biz.riverone.colorcodeconverter.models.AppPreference
 import biz.riverone.colorcodeconverter.models.ColorCode
-import biz.riverone.colorcodeconverter.views.SampleController
+import biz.riverone.colorcodeconverter.views.ColorListAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 
+/**
+ * ColorCodeConvertor
+ * Copyright (C) 2018 J.Kawahara
+ * 2018.1.12 J.Kawahara 新規作成
+ * 2018.1.13 J.Kawahara ver.1.01 初版公開
+ * 2018.2.8  J.Kawahara ver.1.02 履歴をRecyclerView で30件まで表示
+ */
 class MainActivity : AppCompatActivity() {
 
     private var mode: Int = AppPreference.MODE_RGB_TO_HEX
@@ -28,10 +39,11 @@ class MainActivity : AppCompatActivity() {
     private val editTextHex by lazy { findViewById<EditText>(R.id.editTextHex) }
     private val textViewResult by lazy { findViewById<TextView>(R.id.textViewResult) }
 
-    private val controlDecToHex: View by lazy { findViewById<View>(R.id.controlDecToHex) }
-    private val controlHexToDec: View by lazy { findViewById<View>(R.id.controlHexToDec) }
+    private val controlDecToHex by lazy { findViewById<View>(R.id.controlDecToHex) }
+    private val controlHexToDec by lazy { findViewById<View>(R.id.controlHexToDec) }
 
-    private val sampleControllerList = ArrayList<SampleController>()
+    private val colorListView by lazy { findViewById<RecyclerView>(R.id.colorListView) }
+    private lateinit var colorListAdapter: ColorListAdapter
 
     private lateinit var mAdView : AdView
 
@@ -45,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         AppPreference.initialize(applicationContext)
         initializeControls()
 
-        // 前回終了時の履歴を表示する
+        // 前回終了時の状態を復元する
         if (AppPreference.mode == AppPreference.MODE_RGB_TO_HEX) {
             val radio10To16 = findViewById<RadioButton>(R.id.radio10To16)
             radio10To16.isChecked = true
@@ -53,12 +65,6 @@ class MainActivity : AppCompatActivity() {
             val radio16To10 = findViewById<RadioButton>(R.id.radio16To10)
             radio16To10.isChecked = true
         }
-        // switchMode(AppPreference.mode)
-
-        displayColor(AppPreference.colorHistory3)
-        displayColor(AppPreference.colorHistory2)
-        displayColor(AppPreference.colorHistory1)
-        displayColor(AppPreference.colorHistory0)
 
         // AdMob
         MobileAds.initialize(this, "ca-app-pub-1882812461462801~5078378587")
@@ -88,43 +94,6 @@ class MainActivity : AppCompatActivity() {
             editTextHex.text.clear()
         }
 
-
-        // 色サンプルコントロールの準備
-        sampleControllerList.clear()
-
-        val colorSample0 = findViewById<View>(R.id.colorSample0)
-        val controller0 = SampleController(
-                this,
-                colorSample0.findViewById<View>(R.id.colorSampleView),
-                colorSample0.findViewById(R.id.textViewColorCode),
-                colorSample0.findViewById(R.id.textViewRGB))
-
-        sampleControllerList.add(controller0)
-
-        val colorSample1 = findViewById<View>(R.id.colorSample1)
-        val controller1 = SampleController(
-                this,
-                colorSample1.findViewById<View>(R.id.colorSampleView),
-                colorSample1.findViewById(R.id.textViewColorCode),
-                colorSample1.findViewById(R.id.textViewRGB))
-        sampleControllerList.add(controller1)
-
-        val colorSample2 = findViewById<View>(R.id.colorSample2)
-        val controller2 = SampleController(
-                this,
-                colorSample2.findViewById<View>(R.id.colorSampleView),
-                colorSample2.findViewById(R.id.textViewColorCode),
-                colorSample2.findViewById(R.id.textViewRGB))
-        sampleControllerList.add(controller2)
-
-        val colorSample3 = findViewById<View>(R.id.colorSample3)
-        val controller3 = SampleController(
-                this,
-                colorSample3.findViewById<View>(R.id.colorSampleView),
-                colorSample3.findViewById(R.id.textViewColorCode),
-                colorSample3.findViewById(R.id.textViewRGB))
-        sampleControllerList.add(controller3)
-
         // RGB 入力欄の準備
         // フォーカスが当たったら、テキストを全選択する
         editTextR?.setSelectAllOnFocus(true)
@@ -151,11 +120,34 @@ class MainActivity : AppCompatActivity() {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(textViewResult.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
+
+        // 色履歴表示コントロールの準備
+        colorListView.layoutManager = LinearLayoutManager(this)
+
+        colorListAdapter = ColorListAdapter()
+        colorListAdapter.defaultColorId = ContextCompat.getColor(this, R.color.mainBackground)
+        colorListView.adapter = colorListAdapter
+
+        // スワイプで要素を削除する準備
+        val touchHelper = ItemTouchHelper(swipeListCallback)
+        touchHelper.attachToRecyclerView(colorListView)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // 前回終了時の情報を取得する
+        AppPreference.initialize(this)
+        colorListAdapter.fromJson(AppPreference.historyJson)
     }
 
     override fun onPause() {
         super.onPause()
+
+        // 終了時の情報を保存する
         AppPreference.mode = mode
+        AppPreference.historyJson = colorListAdapter.toJson()
+
         AppPreference.saveAll(applicationContext)
     }
 
@@ -169,7 +161,6 @@ class MainActivity : AppCompatActivity() {
         textViewResult.text = result
 
         displayColor(result)
-        putColorHistory()
     }
 
     // 16進コード → 10進RGB
@@ -184,7 +175,6 @@ class MainActivity : AppCompatActivity() {
         textViewResult.text = result
 
         displayColor(ColorCode.rgbToHex(r, g, b))
-        putColorHistory()
     }
 
     private fun switchMode(mode: Int) {
@@ -215,25 +205,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayColor(strColor: String) {
-
-        var i = sampleControllerList.size - 2
-        while (i >= 0) {
-            sampleControllerList[i + 1].setColor(sampleControllerList[i].currentColorCode)
-            i -= 1
-        }
-        if (sampleControllerList.size > 0) {
-            sampleControllerList[0].setColor(strColor)
-        }
-    }
-
-    private fun putColorHistory() {
-        // 履歴を保存する
-        if (sampleControllerList.size >= 4) {
-            AppPreference.colorHistory0 = sampleControllerList[0].currentColorCode
-            AppPreference.colorHistory1 = sampleControllerList[1].currentColorCode
-            AppPreference.colorHistory2 = sampleControllerList[2].currentColorCode
-            AppPreference.colorHistory3 = sampleControllerList[3].currentColorCode
-        }
+        colorListAdapter.addItem(0, strColor)
+        colorListView.scrollToPosition(0)
     }
 
     private inner class MyFilter : InputFilter {
@@ -243,6 +216,21 @@ class MainActivity : AppCompatActivity() {
                 return source!!
             }
             return ""
+        }
+    }
+
+    // スワイプでリサイクラービューの要素を削除する
+    private val swipeListCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+            // 横にスワイプされたら要素を削除する
+            if (viewHolder != null) {
+                val swipedPosition = viewHolder.adapterPosition
+                colorListAdapter.remove(swipedPosition)
+            }
         }
     }
 }
