@@ -17,6 +17,7 @@ import org.json.JSONException
  * ColorListAdapter.kt: リサイクルビュー用カスタムアダプタ
  * Created by kawahara on 2018/02/08.
  */
+
 class ColorListAdapter : RecyclerView.Adapter<ColorListAdapter.ViewHolder>() {
     companion object {
         // 履歴を表示する最大件数

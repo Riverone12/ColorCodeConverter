@@ -6,6 +6,7 @@ import net.grandcentrix.tray.AppPreferences
 /**
  * AppPreference.kt: このアプリの設定項目
  * Created by kawahara on 2018/01/13.
+ * 2018.2.8 J.Kawahara 履歴をJSON形式で保存
  */
 object AppPreference {
 
