@@ -26,6 +26,7 @@ import com.google.android.gms.ads.MobileAds
  * 2018.1.12 J.Kawahara 新規作成
  * 2018.1.13 J.Kawahara ver.1.01 初版公開
  * 2018.2.8  J.Kawahara ver.1.02 履歴をRecyclerView で30件まで表示
+ * 2018.2.16 J.Kawahara ver.1.03 丸型アイコンを変更
  */
 
 class MainActivity : AppCompatActivity() {
